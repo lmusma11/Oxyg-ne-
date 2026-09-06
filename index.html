@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oxygène — فاتورة الحظ</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#06131a;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{width:min(430px,100%);background:linear-gradient(160deg,#071923,#0c2630);border:1px solid #1a6170;border-radius:28px;padding:28px 20px;text-align:center;box-shadow:0 20px 60px #0008}
+.logo{font-size:34px;letter-spacing:1px;margin-bottom:4px}.logo b{color:#42d8f5}.sub{font-size:12px;letter-spacing:4px;color:#9db5bc;margin-bottom:25px}
+h1{font-size:29px;color:#ffd66b;margin:10px 0}.hint{color:#c5d4d8;line-height:1.7}
+.bubble{width:210px;height:210px;margin:25px auto;border-radius:50%;background:radial-gradient(circle at 35% 30%,#64e9ff,#0c5668 48%,#061923 72%);border:2px solid #4ee0ff;box-shadow:0 0 35px #21c8e955,inset 0 0 35px #ffffff22;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;transition:.2s}
+.bubble:active{transform:scale(.96)}.bubble span{font-size:19px;font-weight:bold}
+button{border:0;border-radius:14px;padding:15px 25px;font-size:17px;font-weight:bold;background:#ffd15a;color:#152026;cursor:pointer;width:90%}
+.result{display:none;margin-top:20px;padding:20px;border-radius:20px;background:#071116;border:1px solid #d4ad48}.result h2{color:#ffd66b;margin:0 0 8px}.code{font-size:24px;letter-spacing:3px;margin:15px 0;color:#fff}.small{font-size:12px;color:#9db5bc}
+footer{margin-top:25px;font-size:11px;color:#77939b}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo"><b>O</b>xygène</div>
+  <div class="sub">RESTAURANT</div>
+  <h1>🎁 فاتورة الحظ</h1>
+  <div class="hint">خذ نفسًا... وجرب حظك!<br>اضغط على الفقاعة لاكتشاف جائزتك.</div>
+  <div class="bubble" id="bubble"><span>اضغط هنا<br>لتجربة حظك</span></div>
+  <button id="tryBtn">اكتشف جائزتي ✨</button>
+  <div class="result" id="result">
+    <h2 id="title"></h2>
+    <div id="desc"></div>
+    <div class="code" id="code"></div>
+    <div class="small">أرِ هذا الرمز للنادل. الرمز صالح لمحاولة واحدة على هذا الجهاز.</div>
+  </div>
+  <footer>Oxygène — PLUS QU’UN REPAS... UNE EXPÉRIENCE.</footer>
+</div>
+<script>
+const prizes=[
+  {name:"🎉 وجبة مجانية!",desc:"مبروك! وجبتك علينا اليوم.",weight:2},
+  {name:"🥤 مشروب مجاني",desc:"استمتع بمشروب مجاني مع زيارتك.",weight:13},
+  {name:"🍰 حلوى مجانية",desc:"حلوى مجانية لك اليوم.",weight:15},
+  {name:"🎟️ خصم 20%",desc:"خصم 20% على طلبك القادم.",weight:20},
+  {name:"🎟️ خصم 10%",desc:"خصم 10% على طلبك القادم.",weight:25},
+  {name:"😊 حظًا أوفر!",desc:"لم تفز هذه المرة... جرّب في زيارة أخرى.",weight:25}
+];
+let used=localStorage.getItem("oxy_lucky_used")==="1";
+function pick(){
+ let total=prizes.reduce((s,p)=>s+p.weight,0), r=Math.random()*total;
+ for(const p of prizes){r-=p.weight;if(r<0)return p}
+}
+function play(){
+ if(used){show({name:"🔒 المحاولة مستعملة",desc:"هذه الفاتورة استُعملت بالفعل على هذا الجهاز."});return}
+ used=true;localStorage.setItem("oxy_lucky_used","1");
+ const p=pick(), code="OXY-"+Math.random().toString(36).slice(2,6).toUpperCase();
+ show(p,code);
+}
+function show(p,code=""){document.getElementById("title").textContent=p.name;document.getElementById("desc").textContent=p.desc;document.getElementById("code").textContent=code;document.getElementById("result").style.display="block";document.getElementById("bubble").style.display="none";document.getElementById("tryBtn").style.display="none";}
+document.getElementById("bubble").onclick=play;document.getElementById("tryBtn").onclick=play;
+</script>
+</body></html>
